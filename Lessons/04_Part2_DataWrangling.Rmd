@@ -68,7 +68,15 @@ NTL.phys.data.PeterPaul.subset <- select(NTL.phys.data.PeterPaul,
 NTL.nutrient.data.PeterPaul.subset <- select(NTL.nutrient.data.PeterPaul, 
                                              lakename, year4, daynum, month, sampledate, depth:po4)
 
+NTL.nutrient.data$sampledate <- as.Date(NTL.nutrient.data$sampledate, format = "%m/%d/%y")
+
 # write a more succinct line of code to subset the nutrient dataset. 
+NTL.nutrient.data.PeterPaul.mytry <- 
+  NTL.nutrient.data %>%
+  filter(lakename == "Paul Lake" | lakename == "Peter Lake") %>%
+  mutate(month = month(sampledate)) %>% 
+  select(lakename:daynum, month, sampledate, depth:po4) %>% 
+  drop_na(depth)
 
 ```
 
@@ -85,14 +93,14 @@ However, there may be situations where we want to reshape our dataset, for examp
 We will work with the new functions from `tidyr`. For gather we will use `pivot_longer` and for spread we will use `pivot_wider`. Note that if you are familiar with `gather` and `spread` will may still use it, they are not going away, but they are not under active development.
 
 ```{r}
-# Gather nutrient data into one column
-#NTL.nutrient.data.PeterPaul.gathered <- gather(NTL.nutrient.data.PeterPaul.subset, "nutrient", "concentration", tn_ug:po4)
+# Gather nutrient data into one column (not this one for now)
+# NTL.nutrient.data.PeterPaul.gathered <- gather(NTL.nutrient.data.PeterPaul.subset, "nutrient", "concentration", tn_ug:po4)
 
 # Gather nutrient data into one column using pivot_longer
 NTL.nutrient.data.PeterPaul.gathered <- pivot_longer(NTL.nutrient.data.PeterPaul.subset,tn_ug:po4, names_to = "nutrient", values_to = "concentration")
 
 NTL.nutrient.data.PeterPaul.gathered <- subset(NTL.nutrient.data.PeterPaul.gathered, !is.na(concentration))
-count(NTL.nutrient.data.PeterPaul.gathered, nutrient)
+count(NTL.nutrient.data.PeterPaul.gathered$nutrient)
 
 write.csv(NTL.nutrient.data.PeterPaul.gathered, row.names = FALSE, 
           file = "./Data/Processed/NTL-LTER_Lake_Nutrients_PeterPaulGathered_Processed.csv")
