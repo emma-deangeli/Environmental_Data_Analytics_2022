@@ -37,54 +37,59 @@ vector2
 vector3 <- c(TRUE,TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
 vector3
 
-vector1[3] # 
+vector1[3] # gives the third item of the vector list
 
 # Matrices ----
-matrix1 <- matrix(1:20, nrow = 5,ncol = 4) # 
+matrix1 <- matrix(1:20, nrow = 5,ncol = 4) # creates a matrix of 1-20 with 5 rows and 4 columns, the numbers going from top to bottom
 matrix1
-matrix2 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE) #
+matrix2 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE) # same as above except for with the numbers going from left to right
 matrix2
 matrix3 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE, # return after comma continues the line
                   dimnames = list(c("uno", "dos", "tres", "cuatro", "cinco"), 
-                                  c("un", "deux", "trois", "cat"))) #
+                                  c("un", "deux", "trois", "cat"))) #creates the same matrix as before with the rows and columns labelled, the rows being the Spanish numbers
 
-matrix1[4, ] #
-matrix1[ , 3] #
-matrix1[c(12, 14)] #
-matrix1[c(12:14)] #
-matrix1[2:4, 1:3] #
+matrix3
+
+matrix1[4, ] # gives the 4th row of the first matrix
+matrix1[ , 3] # gives the 3rd column of the first matrix
+matrix1[c(12, 14)] # gives the values 12 and 14 in matrix 1
+matrix1[c(12:14)] # gives the values 12 through 14
+matrix1[2:4, 1:3] #shows the matrix from rows 2 to 4 and from columns 1 to 3
 
 cells <- c(1, 26, 24, 68)
 rnames <- c("R1", "R2")
 cnames <- c("C1", "C2") 
 matrix4 <- matrix(cells, nrow = 2, ncol = 2, byrow = TRUE,
-  dimnames = list(rnames, cnames)) # 
+  dimnames = list(rnames, cnames)) # same matrix creation as before but the dimnames adds the pre-existing matrices of names to the matrix, giving row names first
 matrix4
 
 # Lists ---- 
 list1 <- list(name = "Maria", mynumbers = vector1, mymatrix = matrix1, age = 5.3); list1
-list1[[2]]
+list1[[2]] # calls the second item on the list, which is "mynumbers"
 
 # Data Frames ----
-d <- c(1, 2, 3, 4) # What type of vector?
-e <- c("red", "white", "red", NA) # What type of vector?
-f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector?
-dataframe1 <- data.frame(d,e,f) #
-names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # 
+d <- c(1, 2, 3, 4) # What type of vector? numeric
+e <- c("red", "white", "red", NA) # What type of vector? character
+f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector? logical
+dataframe1 <- data.frame(d,e,f) # creates a data frame with vectors d, e, and f
+names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # assigns names to the data frame and opens the data frame in another tab
 
-dataframe1[1:2,] # 
-dataframe1[c("ID","Passed")] # 
+dataframe1[1:2,] # doesn't do anything
+dataframe1[c("ID","Passed")] # also does nothing
 dataframe1$ID
 
 ```
 Question: How do the different types of data appear in the Environment tab?
 
-> Answer: 
+> Answer: vectors appear with their type and their items listed, matrices appear with their types and values listed as well as how they are arranged, lists appear with a dropdown for the list as well as the number of items, and the data frame also has a dropdown with the variables listed with their corresponding objects.
 
 Question: In the R chunk below, write "dataframe1$". Press `tab` after you type the dollar sign. What happens?
 
-> Answer: 
+> Answer: the variable "ID" is input
 
+```{r}
+dataframe1$ID
+```
 
 
 
@@ -93,25 +98,31 @@ Question: In the R chunk below, write "dataframe1$". Press `tab` after you type 
 Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North Carolina. Create two vectors, one representing the high temperature on each of the ten days and one representing the low.
 
 ```{r}
-
+high <- c(44, 45, 51, 36, 44, 50, 53, 62, 67, 61)
+low <- c(25, 20, 27, 19, 15, 25, 26, 35, 49, 34)
 ```
 
 Now, create two additional vectors that include the ten-day forecast for the high and low temperatures in Celsius. Use a function to create the two new vectors from your existing ones in Fahrenheit.
 
 ```{r}
-
+highc <- (high-32)/1.8
+lowc <- (low-32)/1.8
 ```
 
 Combine your four vectors into a data frame and add informative column names.
 
 ```{r}
-
+dataframet <- data.frame(high, low, highc, lowc) 
+names(dataframet) <- c("High (F)","Low (F)","High (C)", "Low (C)"); View(dataframet)
 ```
 
 Use the common functions `summary` and `sd` to obtain basic data summaries of the ten-day forecast. How would you call these functions differently for the entire data frame vs. a single column? Attempt to demonstrate both options below.
 
 ```{r}
-
+summary(dataframet)
+summary(dataframet$`High (F)`)
+sd(dataframet$'High (F)')
+# sd(dataframet) this doesn't work
 ```
 
 ### Date objects
@@ -134,9 +145,10 @@ Remember formatting of dates in R:
 # (code must be uncommented)
 today <- Sys.Date()
 format(today, format = "%B")
-#format(today, format = "")
-#format(today, format = "")
-#format(today, format = "")
+
+format(today, format = "%Y-%m-%d")
+format(today, format = "%B %d, %Y")
+format(today, format = "%m%d%y")
 
 ```
 
@@ -148,7 +160,7 @@ Install and load the package lubridate into your R session. Lubridate offers fas
 More info on lubridate [here][https://cran.r-project.org/web/packages/lubridate/lubridate.pdf].
 
 ```{r DateExercise1}
-#install.packages("lubridate")
+# install.packages("lubridate")
 library(lubridate)
 
 #Ex1
@@ -159,7 +171,7 @@ date_obj_today
 
 #Ex2
 str_today <- "21-feb-3"
-#Sine the format is year-month-day we will use function ymd()
+#Since the format is year-month-day we will use function ymd()
 date_obj_today <- ymd(str_today)
 date_obj_today
 
