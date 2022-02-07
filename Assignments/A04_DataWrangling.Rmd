@@ -118,7 +118,7 @@ aerosol.data.filtered.spread <- pivot_wider(aerosol.data.filtered, names_from = 
 dim(aerosol.data.filtered.spread)
 
 #11
-#write.csv(aerosol.data.filtered.spread, row.names = FALSE, file = "../Data/Processed/EPAair_O3_PM25_NC2122_Processed.csv")
+write.csv(aerosol.data.filtered.spread, row.names = FALSE, file = "../Data/Processed/EPAair_O3_PM25_NC2122_Processed.csv")
 
 ```
 
