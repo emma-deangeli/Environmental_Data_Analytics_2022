@@ -18,7 +18,8 @@ editor_options:
 ## Set up
 ```{r, message = FALSE}
 library(tidyverse)
-library(agricolae)   
+library(agricolae)
+library(viridis)
 
 PeterPaul.chem.nutrients <- read.csv("./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
 # Set date to date format
@@ -66,7 +67,7 @@ Are Ozone levels below the threshold for "good" AQI index (0-50)?
 
 > Exercise 1: State the hypotheses for testing mean of AQI index.
 
-> Answer: 
+> Answer: null AQI >= 50, alt < 50
 
 
 ```{r}
@@ -94,7 +95,7 @@ print(Ozone.plot)
 
 Write a sentence or two about the results of this test. Include both the results of the test and an interpretation that puts the findings in context of the research question.
 
-> 
+> p-value < 0.05, reject the null hypotheses that miu >= 50. Ozone levels within standard of "good"
 
 ### Two-sample t-test
 
@@ -151,7 +152,27 @@ Create three plots, each with appropriately formatted axes and legends. Choose a
 
 ```{r}
 #Exercise 2:
+O3.density <-
+  ggplot(EPAair, aes(x = Ozone, fill = as.factor(Year))) + # "fill" goes within the aes function
+  geom_density(alpha = 0.8) +
+  scale_fill_manual(values = c("purple", "magenta")) +
+  labs(x = "Ozone AQI vale", y = "Density", fill = "")
+print(O3.density)
 
+O3.boxplot <-
+  ggplot(EPAair, aes(x = as.factor(Year), y = Ozone)) +
+  geom_boxplot() +
+  stat_summary(geom = "text", fun.y = max, vjust = -1, size = 4, label = c("b", "a")) +
+  labs(x = "", y = "Ozone AQI value")
+print(O3.boxplot)
+
+
+O3.violin <-
+  ggplot(EPAair, aes(x = as.factor(Year), y = Ozone)) +
+  geom_violin(draw_quantiles = 0.5) +
+  stat_summary(geom = "text", fun.y = max, vjust = -1, size = 4, label = c("b", "a")) +
+  labs(x = "", y = "Ozone AQI value")
+print(O3.violin)
 
 ```
 
@@ -164,12 +185,19 @@ For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 ```{r}
 
 #Exercise 3: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
+PM2.5.regression <- lm(data = EPAair, PM2.5 ~ Ozone)
+summary(PM2.5.regression)
 
-
+## p-value <2.2e-16, R-squared: 0.1316
 
 #Exercise 4: Build a scatterplot. Add a line and standard error for the linear regression. 
 
-
+OzonebyPM2.5 <- 
+  ggplot(EPAair, aes(x = Ozone, y = PM2.5)) +
+  geom_smooth(method = "lm") +
+  scale_y_log10() +
+  geom_point() 
+print(OzonebyPM2.5) 
 
 ```
 

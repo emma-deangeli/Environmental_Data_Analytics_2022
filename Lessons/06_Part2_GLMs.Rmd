@@ -85,7 +85,7 @@ summary(Litter.Totals.anova2)
 
 # Checking model fit and assumptions
 # ANOVA is robust against departures from normality.
-plot(Litter.Totals.anova2)
+
 
 # Post-hoc test
 # TukeyHSD() computes Tukey Honest Significant Differences
