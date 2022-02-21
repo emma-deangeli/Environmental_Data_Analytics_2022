@@ -67,7 +67,7 @@ shapiro.test(Litter.Totals$dryMass[Litter.Totals$plotID == "NIWO_067"])
 qqnorm(Litter.Totals$dryMass); qqline(Litter.Totals$dryMass)
 
 # Test for equal variance
-# ANOVA is robust against departures from equal variance.
+# ANOVA is robust against departures from equal variance... as in, it works even when there is not equal variance
 # bartlett.test() performs Bartlett's test of the null that the variances in each of the groups (samples) are the same.
 bartlett.test(Litter.Totals$dryMass ~ Litter.Totals$plotID)
 
@@ -77,7 +77,7 @@ bartlett.test(Litter.Totals$dryMass ~ Litter.Totals$plotID)
 Litter.Totals.anova <- aov(data = Litter.Totals, dryMass ~ plotID)
 summary(Litter.Totals.anova)
 
-#results: reject null hypothesis i.e. difference between a pair of group means is statiscally significant
+#results: reject null hypothesis i.e. difference between a pair of group means is statistically significant
 
 # Format ANOVA as lm
 Litter.Totals.anova2 <- lm(data = Litter.Totals, dryMass ~ plotID)
@@ -109,7 +109,7 @@ print(Litter.Totals.plot)
 
 What information does the output give us? How might we report this information in a report?
 
-> 
+> This shows the means of the dry mass and whether or not they're significantly different based upon different groupings.
 
 ## TWO-WAY ANOVA
 ### Main effects

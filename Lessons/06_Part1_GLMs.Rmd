@@ -56,7 +56,7 @@ theme_set(mytheme)
 A linear regression is comprised of a continuous response variable, plus a combination of 1+ continuous response variables (plus the error term). The deterministic portion of the equation describes the response variable as lying on a straight line, with an intercept and a slope term. The equation is thus a typical algebraic expression: 
 $$ y = \alpha + \beta*x + \epsilon $$
 
-The goal for the linear regression is to find a **line of best fit**, which is the line drawn through the bivariate space that minimizes the total distance of points from the line. This is also called a "least squares" regression. The remainder of the variance not explained by the model is called the **residual error.** 
+The goal for the linear regression is to find a **line of best fit**, which is the line drawn through the bivariate space that minimizes the total distance of points from the line. This is also called a "least squares" regression. The remainder of the variance not explained by the model is called the **residual error.** Difference of point in the line and point in the observation is the residual. R-squared is how much of the variability in the series is explained by the explanatory variables. R close to one is a good fit. p-value is significance of the regression
 
 The linear regression will test the null hypotheses that
 
@@ -83,7 +83,7 @@ cor.test(PeterPaul.chem.nutrients$irradianceWater, PeterPaul.chem.nutrients$dept
 ```
 Question: How would you report the results of this test (overall findings and report of statistical output)?
 
->  increase in irradiance is a 95.9 decrease in depth
+> important numbers: p-value < 0.05, R squared = 30.91, estimate for depth = -95.
 
 So, we see there is a significant negative correlation between irradiance and depth (lower light levels at greater depths), and that this model explains about 31 % of the total variance in irradiance. Let's visualize this relationship and the model itself. 
 
@@ -114,7 +114,7 @@ irradiancebydepth <-
 print(irradiancebydepth) 
 ```
 
-Given the distribution of irradiance values, we don't have a linear relationship between x and y in this case. Let's try log-transforming the irradiance values. Note we also removing the observations that seems to ba an outlier.
+Given the distribution of irradiance values, we don't have a linear relationship between x and y in this case. Let's try log-transforming the irradiance values. Note we also removing the observations that seems to be an outlier.
 
 ```{r, fig.height = 3, fig.width = 4}
 PeterPaul.chem.nutrients <- filter(PeterPaul.chem.nutrients, 
@@ -143,6 +143,13 @@ irradiancebydepth2 <-
 print(irradiancebydepth2)
 
 # Make the graph attractive
+
+irradiancebydepth3 <- 
+    ggplot(PeterPaul.chem.nutrients, aes(x = depth, y = irradianceWater)) +
+    geom_point(shape = 21, alpha = 0.5) +
+    scale_y_log10() +  #log transformed values for irradianceWater
+    geom_smooth(method = 'lm', se = FALSE, color = "darkgreen")
+print(irradiancebydepth3)
 
 ```
 
