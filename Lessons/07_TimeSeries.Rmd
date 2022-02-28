@@ -255,7 +255,7 @@ print(wind_data_plot)
 
 What would we conclude based on these findings? 
 
-> Answer:
+> Answer: There is a significant downward trend in wind speed over time with statistical significance in seasons 1, 9-12.
 
 
 ## Forecasting with Autoregressive and Moving Average Models (ARMA)
