@@ -57,13 +57,15 @@ These geometries represent features located in geographic space. (There are othe
 
 ![Figure 1. Spatial features represented as points, lines, and polygons.](img/vector_mode.jpg)
 ## 2.4 Coordinate reference systems (crs)
-A **coordinate reference system** or **crs** includes the information used to reference the coordinates used in defining a geometry with actual geographic locations. These will be discussed more later. 
+A **coordinate reference system** or **crs** includes the information used to reference the coordinates used in defining a geometry with actual geographic locations. This is necessary because we work on a plane while the Earth is a globe. 
 
 ## 2.3 Simple feature: geometry + attributes + crs
-A **simple feature** is one geographic element along with it's attributes. In other words, it's a row in a dataframe when that dataframe includes a column for geometry. 
+A **simple feature** is one geographic element along with its attributes. In other words, it's a row in a dataframe when that dataframe includes a column for geometry. 
 
 ## 2.4 Spatial dataframe 
 A **spatial dataframe**, also referred to as **simple features** (or `sf`), **spatially enabled dataframe**, or **geodataframe** is a collection of simple features (geometry + attribute + crs) stored in the format of a dataframe. It inherits all the capabilities of a standard dataframe but also has spatial analysis capabilities. 
+
+We aren't using rastor data model which turns data into a grid.
 
 ## EXERCISE: Exploring Spatial Data
 Let's read some geospatial data into our coding environment. The file we'll read comes in GeoJSON format, which is a standard, open source format for storing geospatial data. The file we'll use is located on-line, obtained via the NC OneMap geospatial portal: https://www.nconemap.gov/datasets/manufactured-gas-plant-sites/explore
@@ -107,7 +109,7 @@ EPAair <- read.csv("./Data/Processed/EPAair_O3_PM25_NC2021_Processed.csv", strin
 EPAair.sites <- EPAair %>% 
   group_by(Site.Name, COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>% 
   summarize(
-    mean_Ozone = mean(Ozone, na.rm=T),    #What does "na.rm=T" do? Is it necessary?
+    mean_Ozone = mean(Ozone, na.rm=T),    #"na.rm=T" is removing NA, is necessary for calculations because R can't divide by something plus 'NA'
     mean_PM25 = mean(PM2.5, na.rm=T),
     count_all = n(),
     count_Ozone = sum(!is.na(Ozone)),
@@ -119,6 +121,11 @@ EPAair.sf <- EPAair.sites %>%
            crs=4326)
 
 #View the data using the methods above...
+plot(EPAair.sf['Site.Name'], pch=16)
+
+ggplot(data=EPAair.sf) + geom_sf()
+
+mapview(EPAair.sf)
 
 ```
 
@@ -187,7 +194,7 @@ The "4326" in the `crs = 4326` is an EPSG code, a number used to look up a speci
 
 The website <http://spatialreference.org/> lists hundreds of standard CRS along with a map and description of where it's appropriate. For example, a useful one in North Carolina is [UTM Zone 17N-NAD 83](http://spatialreference.org/ref/epsg/nad83-utm-zone-17n/). Note also that its *EPSG code* is `26917`; this EPSG code one way we can assign a CRS to our data. If you click on the the "Well Known Text as HTML" link, it will reveal all the specific associated with that CRS... (Another site listing coordinate reference systems is <http://www.epsg.org/>)
 
-Some CRS, however, do not have an associated EPSG code, and for those, we can use the "proj4string", which is a long hand form of the projection information. Just to make it more confusing, some coordinate systems have a "WKT" or "Well known text" code.Mostly, these are all interchangeable and the important bit here is that you understand the need for and requirements of associating a CRS with a spatial dataset. I found this site gives a useful overview of the nuances of coordinate systems: <https://bit.ly/2XUGMyX>
+Some CRS, however, do not have an associated EPSG code, and for those, we can use the "proj4string", which is a long hand form of the projection information. Just to make it more confusing, some coordinate systems have a "WKT" or "Well known text" code. Mostly, these are all interchangeable and the important bit here is that you understand the need for and requirements of associating a CRS with a spatial dataset. I found this site gives a useful overview of the nuances of coordinate systems: <https://bit.ly/2XUGMyX>
 
 ### 3.2.1 Some commonly used CRS
 
@@ -219,7 +226,7 @@ National Center for Ecological Analysis and Synthesis created a CRS summary shee
 ---
 
 ## EXERCISE: Spatial Analysis
-Say we want to the distance between our EPA sites and the nearest Gas Plant. We don't want to report the distances in degrees, so we first want to project our data into a projected crs. We'll use the UTM Zone 17 N - WGS84 crs (EPSG = 32617) 
+Say we want to see? the distance between our EPA sites and the nearest Gas Plant. We don't want to report the distances in degrees, so we first want to project our data into a projected crs. We'll use the UTM Zone 17 N - WGS84 crs (EPSG = 32617) 
 
 
 ```{r Transform the dataset}
@@ -244,7 +251,6 @@ mean_distances <-  rowMeans(distance_matrix)
 #Add as a column to the epa sites
 EPAair.sf.utm  <-  EPAair.sf.utm %>% 
   bind_cols(mean_distances)
-
 
 
 ```
