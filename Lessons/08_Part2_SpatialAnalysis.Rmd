@@ -247,9 +247,12 @@ EnviroAtlas <- read.csv(
   'https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv', colClasses = c('HUC_12' = 'factor'))
 
 
-#Join to HUC_8 features
+#Join to HUC_8 features -- don't know how at all
 
-
+HUC_sf_join <-  merge(x = huc8_sf,
+                           y = EnviroAtlas, 
+                           by.x = "HUC_8", 
+                           by.y = "HUC_12" )
 
 
 #View the outputs

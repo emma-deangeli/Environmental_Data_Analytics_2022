@@ -114,7 +114,7 @@ The URL '<https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Ene
 
 ```{r}
 #Compute HUC8 wind energy
-wind_data <- read.csv(, colClasses = c('HUC_12'='factor') #put in thing above
+wind_data <- read.csv('https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv', colClasses = c('HUC_12'='factor')) #put in thing above
 
 
 
