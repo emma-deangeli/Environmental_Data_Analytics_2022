@@ -11,7 +11,7 @@ nutrient_data <- nutrient_data %>%
   select(lakename, sampledate:po4)
 
 #### Define UI ----
-ui <- fluidPage(theme = shinytheme("yeti"),
+ui <- fluidPage(theme = shinytheme("cerulean"),
   titlePanel("Nutrients in Peter Lake and Paul Lake"),
   sidebarLayout(
     sidebarPanel(
@@ -67,7 +67,7 @@ server <- function(input, output) {
           theme_classic(base_size = 14) +
           scale_shape_manual(values = c(21, 24)) +
           labs(x = "Date", y = expression(Concentration ~ (mu*g / L)), shape = "Lake", fill = "Depth ID") +
-          scale_fill_distiller(palette = "YlOrBr", guide = "colorbar", direction = 1)
+          scale_fill_distiller(palette = "Dark1", guide = "colorbar", direction = 1)
           #scale_fill_viridis_c(option = "viridis", begin = 0, end = 0.8, direction = -1)
       })
        
@@ -85,15 +85,17 @@ shinyApp(ui = ui, server = server)
 #### Questions for coding challenge ----
 #1. Play with changing the options on the sidebar. 
     # Choose a shinytheme that you like. The default here is "yeti"
-    # How do you change the default settings? 
-    # How does each type of widget differ in its code and how it references the dataframe?
-#2. How is the mainPanel component of the UI structured? 
-    # How does the output appear based on this code?
+    # How do you change the default settings? Under the definition of UI, using the function fluidPage
+    # How does each type of widget differ in its code and how it references the dataframe? ggplot still has plus signs but otherwise everything else is
+    # accomplished through commas and parentheses
+#2. How is the mainPanel component of the UI structured? scatterplot
+    # How does the output appear based on this code? in a scatterplot
 #3. Explore the reactive formatting within the server.
-    # Which variables need to have reactive formatting? 
-    # How does this relate to selecting rows vs. columns from the original data frame?
+    # Which variables need to have reactive formatting? sampledate, depth_id, and lakename
+    # How does this relate to selecting rows vs. columns from the original data frame? this is like having the option of selecting rows based on the
+    # column data given.
 #4. Analyze the similarities and differences between ggplot code for a rendered vs. static plot.
-    # Why are the aesthetics for x, y, fill, and shape formatted the way they are?
+    # Why are the aesthetics for x, y, fill, and shape formatted the way they are? The only thing really different is the expression() function which
     # Note: the data frame has a "()" after it. This is necessary for reactive formatting.
     # Adjust the aesthetics, playing with different shapes, colors, fills, sizes, transparencies, etc.
 #5. Analyze the code used for the renderTable function. 

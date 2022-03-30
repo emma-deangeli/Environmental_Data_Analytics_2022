@@ -65,10 +65,23 @@ See: <https://rmarkdown.rstudio.com> and class recording.
 
 <Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).> 
 
+* It's easy enough to do **bullet points** in R Markdowns
+* It has *value* in creating clean reports about data
+* Commenting without confusing it with your code
+* Easy to share with other people
+* Great for crafting reports
+* Doing this in RStudio and version control with Git is seamless
+
 
 ## TEXT EDITING CHALLENGE
 
 Create a table below that details the example datasets we have been using in class. The first column should contain the names of the datasets and the second column should include some relevant information about the datasets. (Hint: use the cheat sheets to figure out how to make a table in Rmd)
+
+Dataset names    | Relevant information
+-----------------|----------------------
+PeterPaul        | Nutrient loads for Peter and Paul Lake
+Garinger Ozone   | The amount of ozone at the Garinger site
+EPA.10 - EPA.19  | Datasets that include information on ozone and particulate matter
 
 
 ## R CHUNK EDITING CHALLENGE
@@ -76,6 +89,10 @@ Create a table below that details the example datasets we have been using in cla
 ### Installing packages
 
 Create an R chunk below that installs the package `knitr`. Instead of commenting out the code, customize the chunk options such that the code is not evaluated (i.e., not run).
+
+```{r eval=FALSE}
+install.packages('knitr')
+```
 
 
 ### Setup
@@ -86,6 +103,24 @@ Load the NTL-LTER_Lake_Nutrients_Raw dataset, display the head of the dataset, a
 
 Customize the chunk options such that the code is run but is not displayed in the final document.
 
+```{r setup, include=FALSE}
+getwd()
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(ggplot2)
+
+mytheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "right")
+theme_set(mytheme)
+
+Nutrients_df <- read.csv("../Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv", stringsAsFactors = TRUE)
+head(Nutrients_df)
+Nutrients_df$sampledate <- as.Date(Nutrients_df$sampledate, format = "%m/%d/%y")
+```
+
+
 
 ### Data Exploration, Wrangling, and Visualization
 
@@ -95,16 +130,68 @@ Create an R chunk below to create a processed dataset do the following operation
 -   Include only surface samples (depth = 0 m)
 -   Drop rows with missing data
 
+```{r}
+Nutrients_revised_df <- Nutrients_df %>%
+    select(lakename:sampledate, depth:po4) %>%
+    filter(depth == 0) %>%
+    drop_na(depth:po4)
+```
+
+
 Create a second R chunk to create a summary dataset with the mean, minimum, maximum, and standard deviation of total nitrogen concentrations for each lake. Create a second summary dataset that is identical except that it evaluates total phosphorus. Customize the chunk options such that the code is run but not displayed in the final document.
+
+```{r include=FALSE}
+Nitrogen_summaries <- 
+  Nutrients_revised_df %>%
+  group_by(lakename) %>%
+  summarise(meanTN = mean(tn_ug), 
+            minTN = min(tn_ug), 
+            maxTN = max(tn_ug))
+
+Phosphorus_summaries <- 
+  Nutrients_revised_df %>%
+    group_by(lakename) %>%
+  summarise(meanTN = mean(tp_ug), 
+            minTN = min(tp_ug), 
+            maxTN = max(tp_ug))
+```
+
 
 Create a third R chunk that uses the function `kable` in the knitr package to display two tables: one for the summary dataframe for total N and one for the summary dataframe of total P. Use the `caption = " "` code within that function to title your tables. Customize the chunk options such that the final table is displayed but not the code used to generate the table.
 
+```{r echo=FALSE}
+knitr::kable(Nitrogen_summaries, caption = "Nitrogen Summaries")
+knitr::kable(Phosphorus_summaries, caption = "Phosphorus Summaries")
+
+```
+
+
 Create a fourth and fifth R chunk that generates two plots (one in each chunk): one for total N over time with different colors for each lake, and one with the same setup but for total P. Decide which geom option will be appropriate for your purpose, and select a color palette that is visually pleasing and accessible. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, customize the chunk options such that the figures are aligned on the left side of the page. Lastly, add a fig.cap chunk option to add a caption (title) to your plot that will display underneath the figure.
+
+```{r echo=FALSE}
+ggplot(Nutrients_revised_df, aes(x = sampledate, y = tn_ug, color = lakename)) + 
+    geom_point() + 
+    scale_color_brewer(palette = "Dark2")
+```
+
+```{r echo=FALSE}
+ggplot(Nutrients_revised_df, aes(x = sampledate, y = tp_ug, color = lakename)) +
+    geom_point() + 
+    scale_color_brewer(palette = "Dark2")
+```
+
 
 
 ### Communicating results
 
 Write a paragraph describing your findings from the R coding challenge above. This should be geared toward an educated audience but one that is not necessarily familiar with the dataset. Then insert a horizontal rule below the paragraph. Below the horizontal rule, write another paragraph describing the next steps you might take in analyzing this dataset. What questions might you be able to answer, and what analyses would you conduct to answer those questions?
+
+> There are some lakes in North Carolina that have more nutrient loads than the other. In particular, it looks like Hummingbird Lake, East Long Lake, and Central Long Lake all have higher nutrient loads than the others, both in terms of their average total phosphorus and average total nitrogen levels. We can see this within the visualization. It shows that while lake nutrient loads have varied over time, there are some lakes that are consistently lower on nutrient loads and some that are consistently higher.
+
+----------------------------------------------------------------------------
+
+> In analyzing this dataset, I might observe how each lake's nutrient loads have changed over time. I might also look at the correlation between nitrogen and phosphorus in these different lakes to see if they're connected. Further, I would see which lakes have statistically significant findings and eliminate those that do not from the analyses.
+
 
 
 ## KNIT YOUR PDF
